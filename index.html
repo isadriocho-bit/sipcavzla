@@ -25,7 +25,6 @@
     "taxID": "J-40494104-5",
     "foundingDate": "2016",
     "telephone": "+58-283-2554034",
-    "email": "sipca2014@gmail.com",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Patio SIPCA, Zona Industrial",
@@ -53,7 +52,8 @@
       <a href="#clientes">Clientes</a>
       <a href="#campo">En campo</a>
       <a href="#trayectoria">Trayectoria</a>
-      <a href="#contacto" class="btn btn-navy btn-sm menu-cta">Cotizar</a>
+      <a href="#trabaja">Empleo</a>
+      <a href="#contacto" class="btn btn-navy btn-sm menu-cta">Contacto</a>
     </nav>
   </div>
 </header>
@@ -71,7 +71,7 @@
       <h1 id="h1" data-split data-delay="250">Siempre a tu <em>servicio</em> en la industria petrolera</h1>
       <p class="lead" data-anim="up" data-delay="750">Desde 2016 prestamos servicios integrales a la industria petrolera nacional: transporte de carga, equipos de vacío, izamiento, obras civiles y saneamiento ambiental en la zona sur oriental del país.</p>
       <div class="hero-cta" data-anim="up" data-delay="900">
-        <a href="#contacto" class="btn btn-navy">Solicitar cotización</a>
+        <a href="#contacto" class="btn btn-navy">Contáctanos</a>
         <a href="#servicios" class="btn btn-outline">Ver servicios</a>
       </div>
     </div>
@@ -309,6 +309,65 @@
     </div>
   </section>
 
+  <!-- TRABAJA CON NOSOTROS -->
+  <section class="section" id="trabaja" aria-labelledby="t-trabaja">
+    <div class="container two-col">
+      <div>
+        <p class="eyebrow dark" data-anim="up"><i aria-hidden="true"></i>Trabaja con nosotros</p>
+        <h2 id="t-trabaja" data-split>¿Quieres trabajar con <em>nosotros</em>?</h2>
+        <p data-anim="up" data-delay="150">Si quieres formar parte del equipo de SIPCA, envíanos tu postulación. Indica el puesto al que aspiras y adjunta tu currículum en PDF.</p>
+        <ol class="apply-steps" data-stagger>
+          <li><span aria-hidden="true">1</span>Completa el formulario con tu nombre y el puesto que te interesa.</li>
+          <li><span aria-hidden="true">2</span>Adjunta tu currículum en formato PDF.</li>
+          <li><span aria-hidden="true">3</span>Nuestro equipo de reclutamiento revisará tu postulación y, si tu perfil encaja, te contactará.</li>
+        </ol>
+      </div>
+      <!-- Envío con FormSubmit (ver README-empleo.txt). Cuando el correo esté confirmado, reemplazar el correo del "action" por la cadena aleatoria que envía FormSubmit. -->
+      <form class="form" id="jobForm" novalidate data-anim="up" data-delay="150" action="https://formsubmit.co/reclutamientoyseleccion@sipca.com.ve" method="POST" enctype="multipart/form-data" target="jobFrame">
+        <p class="form-hint"><span aria-hidden="true">*</span> Campos obligatorios</p>
+        <div class="field">
+          <label for="j-nombre">Nombre completo <span aria-hidden="true">*</span></label>
+          <input id="j-nombre" type="text" name="nombre" required autocomplete="name" aria-describedby="je-nombre">
+          <p class="err" id="je-nombre"></p>
+        </div>
+        <div class="field">
+          <label for="j-puesto">Puesto al que deseas aspirar <span aria-hidden="true">*</span></label>
+          <input id="j-puesto" type="text" name="puesto" required list="j-puestos" autocomplete="off" aria-describedby="j-puesto-help je-puesto">
+          <datalist id="j-puestos">
+            <option value="Chofer de carga pesada">
+            <option value="Operador de grúa">
+            <option value="Operador de maquinaria (payloader, retroexcavadora)">
+            <option value="Soldador">
+            <option value="Mecánico">
+            <option value="Obrero / ayudante de campo">
+            <option value="Supervisor HSE">
+            <option value="Personal administrativo">
+          </datalist>
+          <p class="help" id="j-puesto-help">Escribe el puesto o elige una sugerencia.</p>
+          <p class="err" id="je-puesto"></p>
+        </div>
+        <div class="field">
+          <label for="j-cv">Currículum (PDF) <span aria-hidden="true">*</span></label>
+          <input id="j-cv" type="file" name="attachment" accept=".pdf,application/pdf" required aria-describedby="j-cv-help je-cv">
+          <p class="help" id="j-cv-help">Solo archivos PDF, de hasta 5 MB.</p>
+          <p class="err" id="je-cv"></p>
+        </div>
+        <input type="hidden" name="_subject" value="Nueva postulación - Trabaja con nosotros (web SIPCA)">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <!-- Campo trampa contra robots (FormSubmit lo ignora si viene lleno) -->
+        <div class="hp" aria-hidden="true"><label>No llenar este campo<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+        <div class="field">
+          <label class="check-opt"><input id="j-ok" type="checkbox" name="consentimiento" required aria-describedby="je-ok"><span>Autorizo a SIPCA a usar mis datos y mi currículum únicamente para procesos de reclutamiento y selección. <span aria-hidden="true">*</span></span></label>
+          <p class="err" id="je-ok"></p>
+        </div>
+        <button class="btn btn-navy" type="submit">Enviar postulación</button>
+        <p class="form-note" id="jobNote" role="status" aria-live="polite"></p>
+      </form>
+      <iframe name="jobFrame" id="jobFrame" title="Respuesta del servicio de envío" hidden></iframe>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="cta" aria-labelledby="t-cta">
     <div class="cta-bg" aria-hidden="true" data-parallax="0.12"><img src="assets/img/campo/flota-planta.jpg" alt="" width="1280" height="720" loading="lazy" style="object-position:50% 62%"></div>
@@ -323,45 +382,37 @@
     <div class="container two-col">
       <div>
         <p class="eyebrow dark" data-anim="up"><i aria-hidden="true"></i>Contacto</p>
-        <h2 id="t-contacto" data-split>Cuéntenos qué <em>necesita</em></h2>
+        <h2 id="t-contacto" data-split>Estamos a su <em>servicio</em></h2>
+        <p data-anim="up" data-delay="150">Para cotizaciones, consultas o requerimientos de servicio, comuníquese con nosotros por teléfono, escríbanos al correo del departamento correspondiente o por Instagram.</p>
         <ul class="contact-list" data-stagger>
           <li><b>Empresa</b> Servicios Integrales Petroleros, C.A. · RIF J-40494104-5</li>
           <li><b>Dirección</b> Patio SIPCA, Zona Industrial San José de Guanipa, Edo. Anzoátegui
             <a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=San+Jos%C3%A9+de+Guanipa+Anzo%C3%A1tegui+Venezuela" target="_blank" rel="noopener">Ver en el mapa ↗</a></li>
           <li><b>Teléfono</b> <a href="tel:+582832554034">(0283) 2554034</a></li>
-          <li><b>Correo</b> <a href="mailto:sipca2014@gmail.com">sipca2014@gmail.com</a></li>
           <li><b>Instagram</b> <a href="https://www.instagram.com/sipca_vzla/" target="_blank" rel="noopener">@SIPCA_VZLA ↗</a></li>
+          <li><b>Correos</b>
+            <ul class="mail-list">
+              <li><span>Administración</span><a href="mailto:administracion@sipca.com.ve">administracion@sipca.com.ve</a></li>
+              <li><span>Contratación</span><a href="mailto:contratacion@sipca.com.ve">contratacion@sipca.com.ve</a></li>
+              <li><span>Operaciones Sur</span><a href="mailto:operacionessur@sipca.com.ve">operacionessur@sipca.com.ve</a></li>
+              <li><span>SIHOA</span><a href="mailto:sihoa@sipca.com.ve">sihoa@sipca.com.ve</a></li>
+              <li><span>Recursos Humanos</span><a href="mailto:rrhh@sipca.com.ve">rrhh@sipca.com.ve</a></li>
+              <li><span>Seguridad</span><a href="mailto:security@sipca.com.ve">security@sipca.com.ve</a></li>
+              <li><span>Reclutamiento y Selección</span><a href="mailto:reclutamientoyseleccion@sipca.com.ve">reclutamientoyseleccion@sipca.com.ve</a></li>
+              <li><span>Compras</span><a href="mailto:compras@sipca.com.ve">compras@sipca.com.ve</a></li>
+              <li><span>Finanzas</span><a href="mailto:finanzas@sipca.com.ve">finanzas@sipca.com.ve</a></li>
+            </ul>
+          </li>
         </ul>
-        <figure class="sede" data-clip>
-          <img src="assets/img/campo/sede-fachada.jpg" alt="Fachada del Patio SIPCA en San José de Guanipa, con el letrero de la empresa" width="1600" height="1200" loading="lazy">
-          <figcaption>Nuestra sede · Patio SIPCA, San José de Guanipa</figcaption>
-        </figure>
+        <div class="contact-actions" data-anim="up" data-delay="200">
+          <a class="btn btn-navy" href="tel:+582832554034">Llamar ahora</a>
+          <a class="btn btn-outline" href="https://www.instagram.com/sipca_vzla/" target="_blank" rel="noopener">Escribir por Instagram</a>
+        </div>
       </div>
-      <form class="form" id="form" novalidate data-anim="up" data-delay="150">
-        <p class="form-hint"><span aria-hidden="true">*</span> Campos obligatorios</p>
-        <div class="field">
-          <label for="f-nombre">Nombre <span aria-hidden="true">*</span></label>
-          <input id="f-nombre" type="text" name="nombre" required autocomplete="name" aria-describedby="e-nombre">
-          <p class="err" id="e-nombre"></p>
-        </div>
-        <div class="field">
-          <label for="f-empresa">Empresa</label>
-          <input id="f-empresa" type="text" name="empresa" autocomplete="organization">
-        </div>
-        <div class="field">
-          <label for="f-correo">Correo <span aria-hidden="true">*</span></label>
-          <input id="f-correo" type="email" name="correo" required autocomplete="email" inputmode="email" aria-describedby="e-correo">
-          <p class="err" id="e-correo"></p>
-        </div>
-        <div class="field">
-          <label for="f-mensaje">Mensaje <span aria-hidden="true">*</span></label>
-          <textarea id="f-mensaje" name="mensaje" rows="4" required aria-describedby="h-mensaje e-mensaje"></textarea>
-          <p class="help" id="h-mensaje">Indique el servicio, la locación y los plazos estimados.</p>
-          <p class="err" id="e-mensaje"></p>
-        </div>
-        <button class="btn btn-navy" type="submit">Enviar mensaje</button>
-        <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
-      </form>
+      <figure class="sede" data-clip>
+        <img src="assets/img/campo/sede-fachada.jpg" alt="Fachada del Patio SIPCA en San José de Guanipa, con el letrero de la empresa" width="1600" height="1200" loading="lazy">
+        <figcaption>Nuestra sede · Patio SIPCA, San José de Guanipa</figcaption>
+      </figure>
     </div>
   </section>
 </main>
@@ -374,7 +425,7 @@
   </div>
   <div class="container foot-meta">
     <button type="button" class="ck-link ck-link-light" id="ckReopen">Preferencias de cookies</button>
-    <p>Patio SIPCA, Zona Industrial San José de Guanipa, Edo. Anzoátegui · <a href="tel:+582832554034">(0283) 2554034</a> · <a href="mailto:sipca2014@gmail.com">sipca2014@gmail.com</a></p>
+    <p>Patio SIPCA, Zona Industrial San José de Guanipa, Edo. Anzoátegui · <a href="tel:+582832554034">(0283) 2554034</a> · <a href="mailto:administracion@sipca.com.ve">administracion@sipca.com.ve</a> · <a href="#trabaja">Trabaja con nosotros</a></p>
   </div>
 </footer>
 

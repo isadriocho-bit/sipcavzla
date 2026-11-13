@@ -247,47 +247,101 @@
   lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
   lb.addEventListener('close', () => { if (lastShot) lastShot.focus(); });
 
-  /* ---------- Formulario ---------- */
-  const form = $('#form');
-  const note = $('#formNote');
-  const submitBtn = $('button[type="submit"]', form);
-  const rules = {
-    nombre: v => v.trim() ? '' : 'Escriba su nombre.',
-    correo: v => !v.trim() ? 'Escriba su correo electrónico.'
-      : /^\S+@\S+\.\S+$/.test(v) ? '' : 'Revise el formato, por ejemplo: nombre@empresa.com.',
-    mensaje: v => v.trim().length >= 10 ? '' : 'Cuéntenos un poco más (mínimo 10 caracteres).'
-  };
-  function check(name) {
-    const field = form.elements[name];
-    const msg = rules[name](field.value);
-    $('#e-' + name).textContent = msg;
+  /* ---------- Postulación: Trabaja con nosotros ---------- */
+  const job = $('#jobForm');
+  const jobFrame = $('#jobFrame');
+  const jobNote = $('#jobNote');
+  const jobBtn = $('button[type="submit"]', job);
+  const jf = job.elements;
+  const MAX_CV = 5 * 1024 * 1024;
+  let jobSending = false;
+  let jobTimer = null;
+
+  function jobErr(id, msg, field) {
+    $('#' + id).textContent = msg;
     field.setAttribute('aria-invalid', msg ? 'true' : 'false');
     return !msg;
   }
-  Object.keys(rules).forEach(n => {
-    form.elements[n].addEventListener('blur', () => check(n));
-    form.elements[n].addEventListener('input', () => {
-      if (form.elements[n].getAttribute('aria-invalid') === 'true') check(n);
-    });
+  const jobCheck = {
+    nombre: () => jobErr('je-nombre', jf.nombre.value.trim().length >= 3 ? '' : 'Escribe tu nombre completo.', jf.nombre),
+    puesto: () => jobErr('je-puesto', jf.puesto.value.trim().length >= 3 ? '' : 'Indica el puesto al que aspiras.', jf.puesto),
+    ok: () => jobErr('je-ok', jf.consentimiento.checked ? '' : 'Debes autorizar el uso de tus datos para poder enviar.', jf.consentimiento),
+    cv: async () => {
+      const file = jf.attachment.files[0];
+      let msg = '';
+      if (!file) msg = 'Adjunta tu currículum en PDF.';
+      else if (!/\.pdf$/i.test(file.name)) msg = 'El archivo debe ser un PDF.';
+      else if (file.size === 0) msg = 'El archivo está vacío.';
+      else if (file.size > MAX_CV) msg = 'El archivo pesa más de 5 MB. Redúcelo e inténtalo de nuevo.';
+      else {
+        const head = new Uint8Array(await file.slice(0, 5).arrayBuffer());
+        if (String.fromCharCode(...head) !== '%PDF-') msg = 'El archivo no parece ser un PDF válido.';
+      }
+      return jobErr('je-cv', msg, jf.attachment);
+    }
+  };
+
+  jf.nombre.addEventListener('blur', jobCheck.nombre);
+  jf.puesto.addEventListener('blur', jobCheck.puesto);
+  jf.attachment.addEventListener('change', jobCheck.cv);
+  jf.consentimiento.addEventListener('change', jobCheck.ok);
+  [jf.nombre, jf.puesto].forEach(el => el.addEventListener('input', () => {
+    if (el.getAttribute('aria-invalid') === 'true') (el === jf.nombre ? jobCheck.nombre : jobCheck.puesto)();
+  }));
+
+  function jobReset(btnText) {
+    jobSending = false;
+    clearTimeout(jobTimer);
+    jobBtn.disabled = false;
+    jobBtn.textContent = btnText || 'Enviar postulación';
+  }
+
+  // El envío se hace con un formulario normal dirigido a un iframe oculto (así se puede adjuntar el PDF
+  // y la persona no sale de la página). Cuando el iframe termina de cargar, se asume que el envío se realizó.
+  jobFrame.addEventListener('load', () => {
+    if (!jobSending) return;
+    jobReset();
+    job.reset();
+    jobNote.className = 'form-note ok';
+    jobNote.textContent = '¡Postulación enviada! Gracias por tu interés en SIPCA.';
   });
-  form.addEventListener('submit', ev => {
+
+  job.addEventListener('submit', async ev => {
     ev.preventDefault();
-    const results = Object.keys(rules).map(n => [n, check(n)]);
-    const firstBad = results.find(r => !r[1]);
-    note.className = 'form-note';
-    if (firstBad) {
-      note.classList.add('err-msg');
-      note.textContent = 'Revise los campos marcados.';
-      form.elements[firstBad[0]].focus();
+    if (jobSending) return;
+    jobNote.className = 'form-note';
+    jobNote.textContent = '';
+
+    const results = [
+      [jf.nombre, jobCheck.nombre()],
+      [jf.puesto, jobCheck.puesto()],
+      [jf.attachment, await jobCheck.cv()],
+      [jf.consentimiento, jobCheck.ok()]
+    ];
+    const bad = results.find(r => !r[1]);
+    if (bad) {
+      jobNote.classList.add('err-msg');
+      jobNote.textContent = 'Revisa los campos marcados.';
+      bad[0].focus();
       return;
     }
-    const f = form.elements;
-    const body = `Nombre: ${f.nombre.value}\nEmpresa: ${f.empresa.value}\nCorreo: ${f.correo.value}\n\n${f.mensaje.value}`;
-    submitBtn.disabled = true;
-    note.classList.add('ok');
-    note.textContent = 'Abriendo su cliente de correo…';
-    window.location.href = 'mailto:sipca2014@gmail.com?subject=' +
-      encodeURIComponent('Contacto web - ' + f.nombre.value) + '&body=' + encodeURIComponent(body);
-    setTimeout(() => { submitBtn.disabled = false; }, 2500);
+    if (jf._honey.value) {            // robot: se simula el éxito sin enviar nada
+      job.reset();
+      jobNote.classList.add('ok');
+      jobNote.textContent = '¡Postulación enviada! Gracias por tu interés en SIPCA.';
+      return;
+    }
+
+    jobSending = true;
+    jobBtn.disabled = true;
+    jobBtn.textContent = 'Enviando…';
+    jobNote.textContent = 'Enviando tu postulación…';
+    jobTimer = setTimeout(() => {
+      if (!jobSending) return;
+      jobReset();
+      jobNote.className = 'form-note err-msg';
+      jobNote.textContent = 'No pudimos confirmar el envío. Inténtalo de nuevo en unos minutos o comunícate al (0283) 2554034.';
+    }, 40000);
+    job.submit();                     // envío nativo (multipart) hacia el iframe oculto
   });
 })();
